@@ -1,10 +1,15 @@
 import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
+import path from 'path'
+import { fileURLToPath } from 'url'
 import authRoutes from './routes/auth.js'
 import quizRoutes from './routes/quiz.js'
 import leaderboardRoutes from './routes/leaderboard.js'
 import pagingRoutes from './routes/paging.js'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 dotenv.config()
 const app = express()
@@ -16,6 +21,16 @@ app.use('/api/auth', authRoutes)
 app.use('/api/quiz', quizRoutes)
 app.use('/api/leaderboard', leaderboardRoutes)
 app.use('/api/paging', pagingRoutes)
+
+// Serve static files from the React app build directory in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../client/dist')))
+
+  // Handle React routing, return all non-API requests to React app
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/dist/index.html'))
+  })
+}
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' })

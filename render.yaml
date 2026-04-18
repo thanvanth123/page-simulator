@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: os-paging-app
+    runtime: node
+    buildCommand: npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DB_HOST
+        fromDatabase:
+          name: os-paging-db
+          property: host
+      - key: DB_USER
+        fromDatabase:
+          name: os-paging-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: os-paging-db
+          property: password
+      - key: DB_NAME
+        fromDatabase:
+          name: os-paging-db
+          property: database
+      - key: JWT_SECRET
+        generateValue: true
+
+databases:
+  - name: os-paging-db
+    databaseName: master_paging_os
+    user: os_paging_user
