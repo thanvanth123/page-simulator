@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS Paging Educational Website</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --text-primary: #f1f5f9;
+            --accent: #3b82f6;
+        }
+        body {
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        .glow-button {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        }
+        .glow-button:hover {
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <nav class="bg-slate-900/80 backdrop-blur-sm border-b border-slate-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-bold text-white">OS Paging Simulator</h1>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="#home" class="text-slate-300 hover:text-white px-3 py-2">Home</a>
+                    <a href="#learn" class="text-slate-300 hover:text-white px-3 py-2">Learn</a>
+                    <a href="#address-translation" class="text-slate-300 hover:text-white px-3 py-2">Address Translation</a>
+                    <a href="#page-replacement" class="text-slate-300 hover:text-white px-3 py-2">Page Replacement</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <section id="home" class="mb-12">
+            <div class="text-center mb-8">
+                <h2 class="text-4xl font-bold text-white mb-4">Operating System Paging Concepts</h2>
+                <p class="text-xl text-slate-300">Interactive educational tool for understanding memory management</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="glass-card p-6 rounded-2xl">
+                    <h3 class="text-xl font-semibold text-white mb-3">Address Translation</h3>
+                    <p class="text-slate-300 mb-4">Convert logical addresses to physical addresses using page tables</p>
+                    <button onclick="showSection('address-translation')" class="glow-button text-white px-6 py-2 rounded-lg w-full">Try It</button>
+                </div>
+                <div class="glass-card p-6 rounded-2xl">
+                    <h3 class="text-xl font-semibold text-white mb-3">Page Replacement</h3>
+                    <p class="text-slate-300 mb-4">Simulate FIFO, LRU, and Optimal page replacement algorithms</p>
+                    <button onclick="showSection('page-replacement')" class="glow-button text-white px-6 py-2 rounded-lg w-full">Try It</button>
+                </div>
+                <div class="glass-card p-6 rounded-2xl">
+                    <h3 class="text-xl font-semibold text-white mb-3">Memory Visualization</h3>
+                    <p class="text-slate-300 mb-4">Visual representation of paging concepts and memory layout</p>
+                    <button onclick="showSection('memory-viz')" class="glow-button text-white px-6 py-2 rounded-lg w-full">Try It</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="address-translation" class="hidden mb-12">
+            <h2 class="text-3xl font-bold text-white mb-6">Address Translation Calculator</h2>
+            <div class="glass-card p-6 rounded-2xl">
+                <div class="grid md:grid-cols-3 gap-4 mb-6">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-2">Page Number</label>
+                        <input id="pageNumber" type="number" class="w-full rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-white" placeholder="0">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-2">Offset</label>
+                        <input id="offset" type="number" class="w-full rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-white" placeholder="100">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-2">Page Size</label>
+                        <input id="pageSize" type="number" value="1024" class="w-full rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-white">
+                    </div>
+                </div>
+                <button onclick="calculateAddress()" class="glow-button text-white px-6 py-2 rounded-lg mb-4">Calculate Physical Address</button>
+                <div id="addressResult" class="hidden bg-slate-800 p-4 rounded-lg">
+                    <h4 class="text-lg font-semibold text-white mb-2">Result:</h4>
+                    <p id="resultText" class="text-cyan-300"></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="page-replacement" class="hidden mb-12">
+            <h2 class="text-3xl font-bold text-white mb-6">Page Replacement Simulator</h2>
+            <div class="glass-card p-6 rounded-2xl">
+                <div class="grid md:grid-cols-3 gap-4 mb-6">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-2">Reference String</label>
+                        <input id="refString" type="text" class="w-full rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-white" placeholder="1,2,3,4,1,2,5,1,2,3,4,5">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-2">Frames</label>
+                        <input id="frames" type="number" value="3" class="w-full rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-2">Algorithm</label>
+                        <select id="algorithm" class="w-full rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-white">
+                            <option value="FIFO">FIFO</option>
+                            <option value="LRU">LRU</option>
+                            <option value="OPTIMAL">Optimal</option>
+                        </select>
+                    </div>
+                </div>
+                <button onclick="simulatePageReplacement()" class="glow-button text-white px-6 py-2 rounded-lg mb-4">Simulate</button>
+                <div id="simulationResult" class="hidden">
+                    <h4 class="text-lg font-semibold text-white mb-4">Simulation Results:</h4>
+                    <div id="simulationTable" class="overflow-x-auto"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="memory-viz" class="hidden mb-12">
+            <h2 class="text-3xl font-bold text-white mb-6">Memory Visualization</h2>
+            <div class="glass-card p-6 rounded-2xl">
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-slate-300 mb-2">Logical Address</label>
+                    <input id="logicalAddress" type="text" class="w-full rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-white mb-4" placeholder="0x1000">
+                    <button onclick="translateAddress()" class="glow-button text-white px-6 py-2 rounded-lg">Translate Address</button>
+                </div>
+                <div id="memoryResult" class="hidden bg-slate-800 p-4 rounded-lg">
+                    <h4 class="text-lg font-semibold text-white mb-2">Translation Result:</h4>
+                    <p id="memoryResultText" class="text-green-300"></p>
+                </div>
+                <div class="mt-6">
+                    <h4 class="text-lg font-semibold text-white mb-4">Sample Memory Layout:</h4>
+                    <div class="grid grid-cols-4 gap-2">
+                        <div class="bg-blue-600 p-2 rounded text-center text-white text-sm">Page 0</div>
+                        <div class="bg-green-600 p-2 rounded text-center text-white text-sm">Page 1</div>
+                        <div class="bg-purple-600 p-2 rounded text-center text-white text-sm">Page 2</div>
+                        <div class="bg-red-600 p-2 rounded text-center text-white text-sm">Page 3</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            // Show selected section
+            document.getElementById(sectionId).classList.remove('hidden');
+            // Scroll to section
+            document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function calculateAddress() {
+            const pageNumber = parseInt(document.getElementById('pageNumber').value);
+            const offset = parseInt(document.getElementById('offset').value);
+            const pageSize = parseInt(document.getElementById('pageSize').value);
+
+            if (isNaN(pageNumber) || isNaN(offset) || isNaN(pageSize)) {
+                alert('Please enter valid numbers');
+                return;
+            }
+
+            const frame = pageNumber;
+            const physicalAddress = frame * pageSize + offset;
+
+            document.getElementById('resultText').innerHTML = `
+                <strong>Logical Address:</strong> Page ${pageNumber}, Offset ${offset}<br>
+                <strong>Physical Address:</strong> Frame ${frame}, Address ${physicalAddress}<br>
+                <strong>Calculation:</strong> ${frame} × ${pageSize} + ${offset} = ${physicalAddress}
+            `;
+            document.getElementById('addressResult').classList.remove('hidden');
+        }
+
+        function simulatePageReplacement() {
+            const refString = document.getElementById('refString').value.split(',').map(x => parseInt(x.trim())).filter(x => !isNaN(x));
+            const frames = parseInt(document.getElementById('frames').value);
+            const algorithm = document.getElementById('algorithm').value;
+
+            if (refString.length === 0 || isNaN(frames)) {
+                alert('Please enter valid reference string and number of frames');
+                return;
+            }
+
+            const result = simulateAlgorithm(refString, frames, algorithm);
+            displaySimulationResult(result);
+        }
+
+        function simulateAlgorithm(refs, frames, algorithm) {
+            const frameSet = [];
+            const table = [];
+            let faultCount = 0;
+
+            refs.forEach((ref, index) => {
+                const hit = frameSet.includes(ref);
+                if (!hit) {
+                    faultCount++;
+                    if (frameSet.length < frames) {
+                        frameSet.push(ref);
+                    } else {
+                        if (algorithm === 'FIFO') {
+                            frameSet.shift();
+                            frameSet.push(ref);
+                        } else if (algorithm === 'LRU') {
+                            frameSet.shift();
+                            frameSet.push(ref);
+                        } else { // OPTIMAL
+                            const futureDistances = frameSet.map(frame => {
+                                const nextIndex = refs.slice(index + 1).indexOf(frame);
+                                return nextIndex < 0 ? Infinity : nextIndex;
+                            });
+                            const removeIndex = futureDistances.indexOf(Math.max(...futureDistances));
+                            frameSet.splice(removeIndex, 1);
+                            frameSet.push(ref);
+                        }
+                    }
+                }
+                table.push({
+                    step: index + 1,
+                    reference: ref,
+                    frames: [...frameSet],
+                    hit
+                });
+            });
+
+            return { table, faults: faultCount, hits: refs.length - faultCount };
+        }
+
+        function displaySimulationResult(result) {
+            let html = `
+                <div class="mb-4">
+                    <p class="text-cyan-300"><strong>Total Page Faults:</strong> ${result.faults}</p>
+                    <p class="text-green-300"><strong>Total Page Hits:</strong> ${result.hits}</p>
+                </div>
+                <table class="w-full text-sm text-left text-slate-300">
+                    <thead class="text-xs text-slate-400 uppercase bg-slate-700">
+                        <tr>
+                            <th class="px-4 py-2">Step</th>
+                            <th class="px-4 py-2">Reference</th>
+                            <th class="px-4 py-2">Frames</th>
+                            <th class="px-4 py-2">Hit/Fault</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            result.table.forEach(row => {
+                html += `
+                    <tr class="border-b border-slate-600">
+                        <td class="px-4 py-2">${row.step}</td>
+                        <td class="px-4 py-2">${row.reference}</td>
+                        <td class="px-4 py-2">[${row.frames.join(', ')}]</td>
+                        <td class="px-4 py-2 ${row.hit ? 'text-green-400' : 'text-red-400'}">${row.hit ? 'Hit' : 'Fault'}</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            document.getElementById('simulationTable').innerHTML = html;
+            document.getElementById('simulationResult').classList.remove('hidden');
+        }
+
+        function translateAddress() {
+            const logicalAddress = document.getElementById('logicalAddress').value;
+            const address = parseInt(logicalAddress, 16);
+
+            if (isNaN(address)) {
+                alert('Please enter a valid hexadecimal address (e.g., 0x1000)');
+                return;
+            }
+
+            const pageSize = 1024;
+            const pageNumber = Math.floor(address / pageSize);
+            const offset = address % pageSize;
+            const frame = pageNumber; // Simple mapping for demo
+            const physicalAddress = frame * pageSize + offset;
+
+            document.getElementById('memoryResultText').innerHTML = `
+                <strong>Logical Address:</strong> 0x${address.toString(16).toUpperCase()}<br>
+                <strong>Page Number:</strong> ${pageNumber}<br>
+                <strong>Offset:</strong> ${offset}<br>
+                <strong>Frame Number:</strong> ${frame}<br>
+                <strong>Physical Address:</strong> 0x${physicalAddress.toString(16).toUpperCase()}<br>
+                <strong>Calculation:</strong> Frame ${frame} × ${pageSize} + ${offset} = ${physicalAddress}
+            `;
+            document.getElementById('memoryResult').classList.remove('hidden');
+        }
+
+        // Show home section by default
+        showSection('home');
+    </script>
+</body>
+</html>
