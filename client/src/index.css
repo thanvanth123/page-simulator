@@ -1,0 +1,167 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --bg-primary: #020617;
+  --bg-secondary: #0f172a;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --accent: #06b6d4;
+  --accent-hover: #0891b2;
+  --border: #334155;
+}
+
+[data-theme="light"] {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --accent: #0891b2;
+  --accent-hover: #0e7490;
+  --border: #e2e8f0;
+}
+
+body {
+  @apply text-slate-100 antialiased;
+  background: radial-gradient(circle at top, rgba(56, 189, 248, 0.18), transparent 22%), radial-gradient(circle at 90% 20%, rgba(14, 165, 233, 0.12), transparent 18%), var(--bg-primary);
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  transition: background-color 0.3s ease;
+}
+
+[data-theme="light"] body {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+::selection {
+  @apply bg-cyan-500/30 text-white;
+}
+
+[data-theme="light"] ::selection {
+  @apply bg-cyan-500/50 text-slate-900;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 999px;
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.6);
+}
+
+.fade-slide {
+  animation: fadeIn 0.7s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-10px); }
+  60% { transform: translateY(-5px); }
+}
+
+.animate-slideIn {
+  animation: slideIn 0.6s ease forwards;
+}
+
+.animate-pulse-gentle {
+  animation: pulse 2s infinite;
+}
+
+.animate-bounce-subtle {
+  animation: bounce 1s infinite;
+}
+
+.glow-button {
+  @apply bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-3 rounded-full shadow-glow transition-all duration-300;
+}
+
+[data-theme="light"] .glow-button {
+  @apply bg-blue-500 hover:bg-blue-600;
+}
+
+.glass-card {
+  @apply rounded-3xl border border-slate-800 bg-slate-900/80 backdrop-blur-xl shadow-xl shadow-cyan-500/10;
+}
+
+[data-theme="light"] .glass-card {
+  @apply border-slate-200 bg-white/80 shadow-cyan-500/5;
+}
+
+.tooltip {
+  @apply relative;
+}
+
+.tooltip:hover::after {
+  content: attr(data-tooltip);
+  @apply absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-slate-800 text-white text-sm rounded-lg whitespace-nowrap z-10 opacity-100;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .tooltip:hover::after {
+  @apply bg-slate-700;
+}
+
+.progress-bar {
+  @apply w-full bg-slate-700 rounded-full h-2;
+}
+
+[data-theme="light"] .progress-bar {
+  @apply bg-slate-200;
+}
+
+.progress-fill {
+  @apply bg-cyan-500 h-2 rounded-full transition-all duration-500;
+}
+
+.memory-visualization {
+  @apply grid gap-1 p-4 bg-slate-950 rounded-2xl;
+}
+
+[data-theme="light"] .memory-visualization {
+  @apply bg-slate-100;
+}
+
+.memory-cell {
+  @apply w-8 h-8 rounded border border-slate-600 flex items-center justify-center text-xs font-mono transition-all duration-200;
+}
+
+[data-theme="light"] .memory-cell {
+  @apply border-slate-300;
+}
+
+.memory-cell.allocated {
+  @apply bg-cyan-500/20 border-cyan-400 text-cyan-300;
+}
+
+[data-theme="light"] .memory-cell.allocated {
+  @apply bg-cyan-100 border-cyan-300 text-cyan-700;
+}
+
+.memory-cell.page-fault {
+  @apply bg-red-500/20 border-red-400 text-red-300 animate-pulse;
+}
+
+[data-theme="light"] .memory-cell.page-fault {
+  @apply bg-red-100 border-red-300 text-red-700;
+}
